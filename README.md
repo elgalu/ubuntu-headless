@@ -14,8 +14,6 @@ Login to your Jenkins or headless EC2 ubuntu instance:
 
 ### Start service
 
-Now time to start the service.
-
     sudo service headless start
     #=> Starting...Headless almost ready....Headless almost ready....All Done!
 
