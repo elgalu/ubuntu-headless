@@ -4,7 +4,7 @@ Selenium standalone headless server with VNC access
 
 ## Installation
 
-Follow instructions at [headless_install.sh](#file-headless_install-sh).
+Follow instructions at [headless_install.sh](#/elgalu/headless/blob/master/headless_install.sh).
 
 ## Usage
 
