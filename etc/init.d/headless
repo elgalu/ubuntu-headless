@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+#
+# Selenium standalone headless server with VNC access init script.
+#
+# For Debian-based distros.
+#
+### BEGIN INIT INFO
+# Provides:          headless
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Selenium standalone headless server with VNC access
+### END INIT INFO
+
+# sudo vim /etc/init.d/headless
+DESC="Selenium standalone headless server with VNC access"
+USER=headless
+SERVICE_CMD=/opt/headless/start_headless.sh
+
+# See this Stack Overflow item for a delightful bug in Java that requires the
+# strange-looking java.security.egd workaround below:
+# http://stackoverflow.com/questions/14058111/selenium-server-doesnt-bind-to-socket-after-being-killed-with-sigterm
+# DAEMON_OPTS="-Djava.security.egd=file:/dev/./urandom $DAEMON_OPTS"
+ 
+# The value for DISPLAY must match that used by the running instance of Xvfb.
+export AUTHFILE=/opt/headless/Xvfb-4.auth
+export DISPLAY=:4
+export VNC_PORT=5904
+export SELENIUM_HOST=127.0.0.1
+export SELENIUM_PORT=4444
+export PID_FILE=/var/run/headless.pid
+
+# Make sure that the PATH includes the location of the ChromeDriver binary.
+# This is necessary for tests with Chromium to work.
+# export PATH=$PATH:/usr/local/bin
+
+start() {
+    PID_NUM=$(cat $PID_FILE)
+    if ps -p $PID_NUM > /dev/null || \
+       nc -z $SELENIUM_HOST $SELENIUM_PORT || \
+       nc -z 127.0.0.1 $VNC_PORT; then
+        echo "Already running $DESC."
+    else
+        echo "Starting $DESC: "
+        start-stop-daemon -c $USER --start $2 \
+            --pidfile $PID_FILE --make-pidfile --exec $SERVICE_CMD
+    fi
+}
+
+stop() {
+    echo  "Stopping $DESC: "
+    start-stop-daemon --stop --pidfile $PID_FILE
+    killall --quiet --wait -9 gnome-session gnome-shell Xvfb x11vnc
+    # Ensure cleanup by port numbers
+    fuser -k -n tcp $SELENIUM_PORT
+    fuser -k -n tcp $VNC_PORT
+}
+
+status() {
+    # start-stop-daemon --status --pidfile $PID_FILE
+    echo  "Status of $DESC: "
+    PID_NUM=$(cat $PID_FILE)
+    if ps -p $PID_NUM > /dev/null; then
+        echo  "Process $PID_NUM at $PID_FILE is open"
+    else
+        echo  "Process $PID_NUM at $PID_FILE is CLOSED!"
+    fi
+    if nc -z $SELENIUM_HOST $SELENIUM_PORT; then
+        echo   "Selenium $SELENIUM_HOST:$SELENIUM_PORT is open"
+    else
+        echo   "Selenium $SELENIUM_HOST:$SELENIUM_PORT is CLOSED!"
+    fi
+    if nc -z 127.0.0.1 $VNC_PORT; then
+        echo   "VNC 127.0.0.1:$VNC_PORT is open"
+    else
+        echo   "VNC 127.0.0.1:$VNC_PORT is CLOSED!"
+    fi
+}
+
+case "$1" in
+    start)
+        start $@
+        ;;
+ 
+    stop)
+        stop $@
+        ;;
+ 
+    status)
+        status $@
+        ;;
+ 
+    restart)
+        echo "Restarting $DESC..."
+        stop $@
+        sleep 1
+        start $@
+        ;;
+ 
+    *)
+        # /etc/init.d/headless
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+    ;;
+esac
+ 
+exit 0
