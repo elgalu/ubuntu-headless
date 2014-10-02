@@ -60,7 +60,7 @@ function_to_fork() {
     x11vnc -forever -usepw -shared -listen localhost \
         -rfbport $VNC_PORT -display $DISPLAY >$VNC_LOG 2>&1  &
 
-    # Block until selenium is up and running
+    # Block until vnc is up and running
     while ! nc -z 127.0.0.1 $VNC_PORT; do sleep 1; done
 
     echo -n Headless almost ready.

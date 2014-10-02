@@ -19,7 +19,7 @@ sudo useradd --shell /bin/bash \
     --create-home --home /opt/headless headless
 cd /opt/headless
 sudo -u headless wget --no-verbose -O selenium-server-standalone.jar \
-    "http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar"
+    "http://selenium-release.storage.googleapis.com/2.43/selenium-server-standalone-2.43.1.jar"
 sudo -u headless rm -rf chromedriver
 sudo -u headless wget --no-verbose -O chromedriver_linux64.zip \
     "http://chromedriver.storage.googleapis.com/2.10/chromedriver_linux64.zip"
@@ -38,11 +38,11 @@ export AUTHFILE=/opt/headless/Xvfb-4.auth
 export DISPLAY=:4
 # Don't worry if xauth says "file Xvfb-4.auth does not exist".
 # The file will be created at that time.
-sudo -E -u headless bash -c 'HOME=/opt/headless xauth -f $AUTHFILE add $DISPLAY MIT-MAGIC-COOKIE-1 $COOKIE'
+sudo -E -u headless sh -c 'HOME=/opt/headless xauth -f $AUTHFILE add $DISPLAY MIT-MAGIC-COOKIE-1 $COOKIE'
 # Add the cookie to the user's authority file
-sudo -E -u headless bash -c 'HOME=/opt/headless xauth add $DISPLAY MIT-MAGIC-COOKIE-1 $COOKIE'
+sudo -E -u headless sh -c 'HOME=/opt/headless xauth add $DISPLAY MIT-MAGIC-COOKIE-1 $COOKIE'
 # Set some VNC password
-sudo sh -c 'x11vnc -storepasswd secret /opt/headless/.vnc/passwd'
+sudo -E -u headless sh -c 'x11vnc -storepasswd secret /opt/headless/.vnc/passwd'
 sudo vim /etc/init.d/headless
 # <== content from that file
 sudo chown root:root /etc/init.d/headless
