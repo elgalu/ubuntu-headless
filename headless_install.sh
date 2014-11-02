@@ -19,7 +19,7 @@ sudo useradd --shell /bin/bash \
     --create-home --home /opt/headless headless
 cd /opt/headless
 sudo -u headless wget --no-verbose -O selenium-server-standalone.jar \
-    "http://selenium-release.storage.googleapis.com/2.43/selenium-server-standalone-2.43.1.jar"
+    "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 sudo -u headless rm -rf chromedriver
 sudo -u headless wget --no-verbose -O chromedriver_linux64.zip \
     "http://chromedriver.storage.googleapis.com/2.12/chromedriver_linux64.zip"
