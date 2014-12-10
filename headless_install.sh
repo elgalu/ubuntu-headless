@@ -22,7 +22,7 @@ sudo -u headless wget --no-verbose -O selenium-server-standalone.jar \
     "http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar"
 sudo -u headless rm -rf chromedriver
 sudo -u headless wget --no-verbose -O chromedriver_linux64.zip \
-    "http://chromedriver.storage.googleapis.com/2.12/chromedriver_linux64.zip"
+    "http://chromedriver.storage.googleapis.com/2.13/chromedriver_linux64.zip"
 sudo -u headless unzip chromedriver_linux64.zip
 sudo -u headless chmod -R 755 chromedriver
 sudo ln -fs /opt/headless/chromedriver /usr/bin/chromedriver
